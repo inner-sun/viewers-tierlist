@@ -114,11 +114,12 @@ export class TierList {
   private createTierUserElement(user: User) {
     const div = document.createElement('div')
     div.className = 'user-item'
+    div.style = `--color: ${user.chatColor}`
     div.draggable = true
     div.dataset.userId = user.id.toString()
     div.innerHTML = `
             <img src="${user.avatar}" alt="${user.name}">
-            <span>${user.name}</span>
+            <span class="user-name">${user.name}</span>
         `
 
     div.addEventListener('dragstart', (e) => {

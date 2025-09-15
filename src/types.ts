@@ -4,6 +4,7 @@ export interface User {
   avatar: string
   message: number
   watchtime: number
+  chatColor
 }
 
 export interface Tier {

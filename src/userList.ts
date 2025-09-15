@@ -20,12 +20,14 @@ export class UserList {
     try {
       const response = await fetch('viewers.json')
       const data = await response.json()
+      console.log(data)
       this.users = data.map((viewer: any) => ({
         id: parseInt(viewer.user_uid),
-        name: viewer.user_name,
+        name: viewer.displayName || viewer.user_name,
         avatar: viewer.avatar,
-        watchtime: viewer.watchtime,
-        message: viewer.message
+        watchtime: parseInt(viewer.watchtime),
+        message: parseInt(viewer.message),
+        chatColor: viewer.chatColor
       }))
 
       this.removeAlreadyRankedUsers()
@@ -44,7 +46,8 @@ export class UserList {
       name,
       avatar: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==',
       message: 0,
-      watchtime: 0
+      watchtime: 0,
+      chatColor: '#FFFFFF'
     }
 
     this.users.push(customUser)
@@ -123,7 +126,7 @@ export class UserList {
     div.innerHTML = `
       <img src="${user.avatar}" alt="${user.name}">
       <div class="user-info">
-        <span class="user-name">${user.name}</span>
+        <span class="user-name" style="--color: ${user.chatColor}">${user.name}</span>
         ${user.message > 0 ? `<span class="user-messages">${formattedMessages} messages</span>` : ''}
         ${user.watchtime > 0 ? `<span class="user-watchtime">${formattedWatchtime} heures en stream</span>` : ''}
       </div>
