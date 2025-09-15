@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tierlist</title>
+  <link rel="stylesheet" href="src/styles/main.scss">
+  <script src="src/main.ts" type="module"></script>
+</head>
+
+<body>
+  <div class="tierlist-container">
+    <div class="tierlist-board">
+      <div class="tier-controls">
+        <button id="add-tier-btn" class="add-tier-btn">+ Ajouter une Ligne</button>
+      </div>
+      <div id="tier-rows" class="tier-rows"></div>
+    </div>
+
+    <div class="users-panel">
+      <div class="users-header">
+        <input type="text" id="user-search" class="user-search" placeholder="Trouver un viewer...">
+      </div>
+      <div id="users-list" class="users-list"></div>
+    </div>
+  </div>
+
+  <div id="tier-modal" class="modal">
+    <div class="modal-content">
+      <h3>Add New Tier</h3>
+      <input type="text" id="tier-name-input" placeholder="Tier name">
+      <input type="color" id="tier-color-input" value="#808080">
+      <div class="modal-actions">
+        <button id="confirm-tier">Add</button>
+        <button id="cancel-tier">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+</body>
+
+</html>
