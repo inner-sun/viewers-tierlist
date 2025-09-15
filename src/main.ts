@@ -21,6 +21,23 @@ class App {
   }
 
   private setupEventListeners() {
+    this.setupTierModal()
+    this.setupUserModal()
+
+    window.addEventListener('userAddedToTier', (e: Event) => {
+      const customEvent = e as CustomEvent<User>
+      this.userList.removeUser(customEvent.detail.id)
+    })
+
+    window.addEventListener('removeUsersFromList', (e: Event) => {
+      const customEvent = e as CustomEvent<User[]>
+      customEvent.detail.forEach(user => {
+        this.userList.removeUser(user.id)
+      })
+    })
+  }
+
+  private setupTierModal() {
     const addTierBtn = document.getElementById('add-tier-btn')!
     const modal = document.getElementById('tier-modal')!
     const confirmBtn = document.getElementById('confirm-tier')!
@@ -49,17 +66,32 @@ class App {
       nameInput.value = ''
       colorInput.value = '#808080'
     })
+  }
 
-    window.addEventListener('userAddedToTier', (e: Event) => {
-      const customEvent = e as CustomEvent<User>
-      this.userList.removeUser(customEvent.detail.id)
+  private setupUserModal() {
+    const addUserBtn = document.getElementById('add-user-btn')!
+    const modal = document.getElementById('user-modal')!
+    const confirmBtn = document.getElementById('confirm-user')!
+    const cancelBtn = document.getElementById('cancel-user')!
+    const nameInput = document.getElementById('user-name-input') as HTMLInputElement
+
+    addUserBtn.addEventListener('click', () => {
+      modal.classList.add('active')
     })
 
-    window.addEventListener('removeUsersFromList', (e: Event) => {
-      const customEvent = e as CustomEvent<User[]>
-      customEvent.detail.forEach(user => {
-        this.userList.removeUser(user.id)
-      })
+    confirmBtn.addEventListener('click', () => {
+      const name = nameInput.value.trim()
+
+      if (name) {
+        this.userList.addCustomUser(name)
+        modal.classList.remove('active')
+        nameInput.value = ''
+      }
+    })
+
+    cancelBtn.addEventListener('click', () => {
+      modal.classList.remove('active')
+      nameInput.value = ''
     })
   }
 }

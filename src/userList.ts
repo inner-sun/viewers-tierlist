@@ -5,6 +5,8 @@ export class UserList {
   private filteredUsers: User[] = []
   private container: HTMLElement
   private searchInput: HTMLInputElement
+  private readonly STORAGE_KEY = 'tierlist-data'
+  private nextCustomUserId = 1000000
 
   constructor(container: HTMLElement, searchInput: HTMLInputElement) {
     this.container = container
@@ -25,12 +27,53 @@ export class UserList {
         watchtime: viewer.watchtime,
         message: viewer.message
       }))
+
+      this.removeAlreadyRankedUsers()
       this.filteredUsers = [...this.users]
       this.render()
     } catch (error) {
       console.error('Failed to load users:', error)
       this.users = []
       this.filteredUsers = []
+    }
+  }
+
+  addCustomUser(name: string) {
+    const customUser: User = {
+      id: this.nextCustomUserId++,
+      name,
+      avatar: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==',
+      message: 0,
+      watchtime: 0
+    }
+
+    this.users.push(customUser)
+
+    const query = this.searchInput.value.toLowerCase()
+    if (customUser.name.toLowerCase().includes(query)) {
+      this.filteredUsers.push(customUser)
+    }
+
+    this.render()
+  }
+
+  private removeAlreadyRankedUsers() {
+    const stored = localStorage.getItem(this.STORAGE_KEY)
+    if (stored) {
+      try {
+        const tiers = JSON.parse(stored)
+        const rankedUserIds = new Set()
+
+        tiers.forEach((tier: any) => {
+          tier.users.forEach((user: User) => {
+            rankedUserIds.add(user.id)
+          })
+        })
+
+        this.users = this.users.filter(user => !rankedUserIds.has(user.id))
+      } catch (e) {
+        console.error('Failed to load tiers from storage:', e)
+      }
     }
   }
 
