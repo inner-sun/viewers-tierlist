@@ -5,8 +5,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Tierlist</title>
-  <script type="module" crossorigin src="./assets/index-CZpb0RTM.js"></script>
-  <link rel="stylesheet" crossorigin href="./assets/index-B-iCdS3p.css">
+  <script type="module" crossorigin src="./assets/index-B3SWtw_P.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-BWZWmx2b.css">
 </head>
 
 <body>
@@ -23,6 +23,7 @@
       <img src='logo.png' id='app-logo' />
       <div class="users-header">
         <input type="text" id="user-search" class="user-search" placeholder="Trouver un viewer...">
+        <button id="add-user-btn" class="add-user-btn">Ajouter</button>
       </div>
       <div id="users-list" class="users-list"></div>
     </div>
@@ -38,6 +39,18 @@
       <div class="modal-actions">
         <button id="confirm-tier">Ajouter</button>
         <button id="cancel-tier">Annuler</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="user-modal" class="modal">
+    <div class="modal-content">
+      <h3>Ajouter un utilisateur</h3>
+      <label for="user-name-input">Nom de l'utilisateur</label>
+      <input type="text" id="user-name-input" placeholder="Nom d'utilisateur">
+      <div class="modal-actions">
+        <button id="confirm-user">Ajouter</button>
+        <button id="cancel-user">Annuler</button>
       </div>
     </div>
   </div>
