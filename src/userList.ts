@@ -14,14 +14,24 @@ export class UserList {
     this.render()
   }
 
-  private initializeUsers() {
-    this.users = Array.from({ length: 100 }, (_, i) => ({
-      id: i + 1,
-      name: `User ${i + 1}`,
-      avatar: `https://i.pravatar.cc/50?img=${(i % 70) + 1}`
-    }))
-    this.filteredUsers = [...this.users]
-    this.randomize()
+  private async initializeUsers() {
+    try {
+      const response = await fetch('viewers.json')
+      const data = await response.json()
+      this.users = data.map((viewer: any) => ({
+        id: parseInt(viewer.user_uid),
+        name: viewer.user_name,
+        avatar: viewer.avatar,
+        watchtime: viewer.watchtime,
+        message: viewer.message
+      }))
+      this.filteredUsers = [...this.users]
+      this.render()
+    } catch (error) {
+      console.error('Failed to load users:', error)
+      this.users = []
+      this.filteredUsers = []
+    }
   }
 
   private setupSearch() {
@@ -55,10 +65,26 @@ export class UserList {
     div.className = 'user-item'
     div.draggable = true
     div.dataset.userId = user.id.toString()
+
+    const formatNumber = (num: number) => {
+      if (num >= 1000) {
+        return Math.round(num / 1000) + 'k'
+      }
+      return num.toString()
+    }
+
+    const watchHours = Math.round(user.watchtime / 3600)
+    const formattedWatchtime = formatNumber(watchHours)
+    const formattedMessages = formatNumber(user.message)
+
     div.innerHTML = `
-            <img src="${user.avatar}" alt="${user.name}">
-            <span>${user.name}</span>
-        `
+      <img src="${user.avatar}" alt="${user.name}">
+      <div class="user-info">
+        <span class="user-name">${user.name}</span>
+        ${user.message > 0 ? `<span class="user-messages">${formattedMessages} messages</span>` : ''}
+        ${user.watchtime > 0 ? `<span class="user-watchtime">${formattedWatchtime} heures en stream</span>` : ''}
+      </div>
+    `
 
     div.addEventListener('dragstart', (e) => {
       e.dataTransfer!.effectAllowed = 'move'

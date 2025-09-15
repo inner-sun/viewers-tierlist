@@ -3,20 +3,51 @@ import { Tier, User } from './types'
 export class TierList {
   private tiers: Tier[] = []
   private container: HTMLElement
+  private readonly STORAGE_KEY = 'tierlist-data'
 
   constructor(container: HTMLElement) {
     this.container = container
-    this.initializeDefaultTiers()
+    this.loadFromStorage()
     this.render()
+  }
+
+  private loadFromStorage() {
+    const stored = localStorage.getItem(this.STORAGE_KEY)
+    if (stored) {
+      try {
+        this.tiers = JSON.parse(stored)
+        this.dispatchUsersInTiers()
+      } catch (e) {
+        console.error('Failed to load tiers from storage:', e)
+        this.initializeDefaultTiers()
+      }
+    } else {
+      this.initializeDefaultTiers()
+    }
+  }
+
+  private dispatchUsersInTiers() {
+    const usersInTiers: User[] = []
+    this.tiers.forEach(tier => {
+      usersInTiers.push(...tier.users)
+    })
+
+    if (usersInTiers.length > 0) {
+      window.dispatchEvent(new CustomEvent('removeUsersFromList', { detail: usersInTiers }))
+    }
+  }
+
+  private saveToStorage() {
+    localStorage.setItem(this.STORAGE_KEY, JSON.stringify(this.tiers))
   }
 
   private initializeDefaultTiers() {
     const defaultTiers = [
-      { name: 'S', color: '#ff7f7f' },
-      { name: 'A', color: '#ffbf7f' },
-      { name: 'B', color: '#ffff7f' },
-      { name: 'C', color: '#7fff7f' },
-      { name: 'D', color: '#7fbfff' }
+      { name: 'S', color: 'linear-gradient(35deg, #1c0aa7, #8e01b1)' },
+      { name: 'A', color: '#da2e4d' },
+      { name: 'B', color: '#fb8006' },
+      { name: 'C', color: '#d3bb07' },
+      { name: 'D', color: '#468946' }
     ]
 
     this.tiers = defaultTiers.map((tier, index) => ({
@@ -25,6 +56,7 @@ export class TierList {
       color: tier.color,
       users: []
     }))
+    this.saveToStorage()
   }
 
   addTier(name: string, color: string) {
@@ -35,6 +67,7 @@ export class TierList {
       users: []
     }
     this.tiers.push(tier)
+    this.saveToStorage()
     this.render()
   }
 
@@ -53,12 +86,13 @@ export class TierList {
 
     const label = document.createElement('div')
     label.className = 'tier-label'
-    label.style.backgroundColor = tier.color
+    label.style.background = tier.color
     label.contentEditable = 'true'
     label.textContent = tier.name
 
     label.addEventListener('blur', () => {
       tier.name = label.textContent || tier.name
+      this.saveToStorage()
     })
 
     const dropzone = document.createElement('div')
@@ -129,6 +163,7 @@ export class TierList {
 
         if (!tier.users.find(u => u.id === user.id)) {
           tier.users.push(user)
+          this.saveToStorage()
           this.render()
 
           if (!fromTier) {

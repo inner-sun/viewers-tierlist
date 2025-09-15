@@ -12,13 +12,15 @@
 <body>
   <div class="tierlist-container">
     <div class="tierlist-board">
+      <div id="tier-rows" class="tier-rows"></div>
+
       <div class="tier-controls">
         <button id="add-tier-btn" class="add-tier-btn">+ Ajouter une Ligne</button>
       </div>
-      <div id="tier-rows" class="tier-rows"></div>
     </div>
 
     <div class="users-panel">
+      <img src='logo.png' id='app-logo' />
       <div class="users-header">
         <input type="text" id="user-search" class="user-search" placeholder="Trouver un viewer...">
       </div>
@@ -28,12 +30,14 @@
 
   <div id="tier-modal" class="modal">
     <div class="modal-content">
-      <h3>Add New Tier</h3>
+      <h3>Ajouter une ligne</h3>
+      <label for="tier-name-input">Nom de la nouvelle ligne</label>
       <input type="text" id="tier-name-input" placeholder="Tier name">
+      <label for="tier-color-input">Couleur</label>
       <input type="color" id="tier-color-input" value="#808080">
       <div class="modal-actions">
-        <button id="confirm-tier">Add</button>
-        <button id="cancel-tier">Cancel</button>
+        <button id="confirm-tier">Ajouter</button>
+        <button id="cancel-tier">Annuler</button>
       </div>
     </div>
   </div>

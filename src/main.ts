@@ -54,6 +54,13 @@ class App {
       const customEvent = e as CustomEvent<User>
       this.userList.removeUser(customEvent.detail.id)
     })
+
+    window.addEventListener('removeUsersFromList', (e: Event) => {
+      const customEvent = e as CustomEvent<User[]>
+      customEvent.detail.forEach(user => {
+        this.userList.removeUser(user.id)
+      })
+    })
   }
 }
 
